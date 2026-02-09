@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import HeroMap from './components/heroMap';
 import PlaceCard from './components/placecard';
 import PlaceModal from './components/placeModal';
