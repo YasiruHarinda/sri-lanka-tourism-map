@@ -1,171 +1,86 @@
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { FaArrowDown, FaHeart, FaMapMarkedAlt } from 'react-icons/fa';
+import { commons } from '../data/places';
 
-const HeroMap = ({ places }) => {
-  const [particles, setParticles] = useState([]);
+const heroImage = commons('e/e6/Sigiriya_%28141688197%29.jpeg', 1280);
 
-  useEffect(() => {
-    setParticles([...Array(50)].map(() => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      duration: 3 + Math.random() * 2,
-      delay: Math.random() * 2
-    })));
-  }, []);
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 24 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.7, delay, ease: 'easeOut' },
+});
 
-  // Sri Lanka outline path (simplified SVG path)
-  const sriLankaPath = "M150,50 Q180,40 200,60 L210,100 Q215,140 200,180 L180,240 Q160,270 140,280 L100,285 Q70,280 55,260 L40,220 Q35,180 45,140 L60,100 Q80,60 110,50 Z";
+const HeroMap = ({ placeCount, unescoCount, favoriteCount, onShowFavorites }) => {
+  const stats = [
+    { value: placeCount, label: 'handpicked places' },
+    { value: unescoCount, label: 'UNESCO-listed sites' },
+    { value: '1,340 km', label: 'of coastline' },
+  ];
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
-      {/* Animated background particles */}
-      <div className="absolute inset-0">
-        {particles.map((particle, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-white rounded-full"
-            initial={{ 
-              x: particle.x, 
-              y: particle.y,
-              opacity: 0 
-            }}
-            animate={{ 
-              opacity: [0.2, 0.8, 0.2],
-              scale: [1, 1.5, 1]
-            }}
-            transition={{ 
-              duration: particle.duration, 
-              repeat: Infinity,
-              delay: particle.delay
-            }}
-          />
-        ))}
-      </div>
+    <header className="relative isolate flex min-h-[88vh] flex-col overflow-hidden bg-lagoon-dark text-white">
+      <img src={heroImage} alt="" className="absolute inset-0 -z-20 h-full w-full object-cover" referrerPolicy="no-referrer" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-lagoon-dark via-lagoon-dark/70 to-black/40" />
 
-      {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full px-4">
-        <motion.h1
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="text-5xl md:text-7xl font-bold text-white text-center mb-8"
-        >
+      <nav className="container mx-auto flex items-center justify-between px-4 py-5">
+        <a href="#top" className="flex items-center gap-2 font-display text-xl font-bold">
+          <FaMapMarkedAlt className="text-saffron" aria-hidden />
           Discover Sri Lanka
-        </motion.h1>
+        </a>
+        <div className="flex items-center gap-1 text-sm font-medium sm:gap-2">
+          <a href="#map" className="hidden rounded-full px-3 py-2 hover:bg-white/10 sm:block">Map</a>
+          <a href="#places" className="hidden rounded-full px-3 py-2 hover:bg-white/10 sm:block">Places</a>
+          <a href="#plan" className="hidden rounded-full px-3 py-2 hover:bg-white/10 sm:block">Plan your trip</a>
+          <button
+            type="button"
+            onClick={onShowFavorites}
+            className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 backdrop-blur hover:bg-white/20"
+          >
+            <FaHeart className="text-rose-300" aria-hidden />
+            <span>Saved</span>
+            <span className="rounded-full bg-saffron px-2 text-xs font-bold text-ink">{favoriteCount}</span>
+          </button>
+        </div>
+      </nav>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="text-xl md:text-2xl text-blue-200 text-center mb-12 max-w-2xl"
-        >
-          Pearl of the Indian Ocean - Where Every Corner Tells a Story
+      <div className="container mx-auto mt-auto px-4 pb-16 pt-24">
+        <motion.p {...fadeUp(0)} className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-saffron">
+          The Pearl of the Indian Ocean
+        </motion.p>
+        <motion.h1 {...fadeUp(0.1)} className="max-w-3xl font-display text-5xl font-bold leading-tight md:text-7xl">
+          Ancient cities, wild coasts and misty tea country.
+        </motion.h1>
+        <motion.p {...fadeUp(0.2)} className="mt-6 max-w-xl text-lg text-white/80">
+          Explore Sri Lanka&apos;s best places on an interactive map. Filter by what you love and the month you
+          travel, and save your favourites as you go.
         </motion.p>
 
-        {/* Animated Sri Lanka Map */}
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ duration: 1.5, delay: 0.8 }}
-          className="relative w-full max-w-2xl h-96"
-        >
-          <svg
-            viewBox="0 0 300 350"
-            className="w-full h-full drop-shadow-2xl"
+        <motion.div {...fadeUp(0.3)} className="mt-10 flex flex-wrap gap-4">
+          <a
+            href="#map"
+            className="inline-flex items-center gap-2 rounded-full bg-saffron px-6 py-3 font-semibold text-ink shadow-lg transition hover:bg-saffron-dark"
           >
-            {/* Map outline with gradient */}
-            <defs>
-              <linearGradient id="mapGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#a78bfa" stopOpacity="0.8" />
-              </linearGradient>
-              
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
-
-            <motion.path
-              d={sriLankaPath}
-              fill="url(#mapGradient)"
-              stroke="#ffffff"
-              strokeWidth="2"
-              filter="url(#glow)"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 2, delay: 1 }}
-            />
-
-            {/* Animated location markers */}
-            {places.slice(0, 4).map((place, index) => {
-              const positions = [
-                { x: 150, y: 100 },  // North-Central
-                { x: 180, y: 200 },  // East
-                { x: 100, y: 250 },  // South
-                { x: 130, y: 150 }   // Central
-              ];
-
-              return (
-                <g key={place.id}>
-                  <motion.circle
-                    cx={positions[index].x}
-                    cy={positions[index].y}
-                    r="8"
-                    fill="#fbbf24"
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                    initial={{ scale: 0 }}
-                    animate={{ 
-                      scale: [1, 1.3, 1],
-                      opacity: [1, 0.7, 1]
-                    }}
-                    transition={{ 
-                      duration: 2,
-                      delay: 1.5 + index * 0.2,
-                      repeat: Infinity,
-                      repeatDelay: 1
-                    }}
-                  />
-                  
-                  <motion.text
-                    x={positions[index].x + 15}
-                    y={positions[index].y + 5}
-                    fill="#ffffff"
-                    fontSize="12"
-                    fontWeight="bold"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 2 + index * 0.2 }}
-                  >
-                    {place.name.split(' ')[0]}
-                  </motion.text>
-                </g>
-              );
-            })}
-          </svg>
+            Explore the map <FaArrowDown aria-hidden />
+          </a>
+          <a
+            href="#plan"
+            className="inline-flex items-center rounded-full border border-white/40 px-6 py-3 font-semibold transition hover:bg-white/10"
+          >
+            When to go
+          </a>
         </motion.div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, y: [0, 10, 0] }}
-          transition={{ 
-            opacity: { delay: 2.5 },
-            y: { duration: 1.5, repeat: Infinity }
-          }}
-          className="absolute bottom-10 text-white text-center"
-        >
-          <p className="text-sm mb-2">Scroll to explore</p>
-          <svg className="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </motion.div>
+        <motion.dl {...fadeUp(0.4)} className="mt-14 grid max-w-2xl grid-cols-3 gap-6 border-t border-white/20 pt-6">
+          {stats.map((s) => (
+            <div key={s.label}>
+              <dt className="sr-only">{s.label}</dt>
+              <dd className="font-display text-3xl font-bold md:text-4xl">{s.value}</dd>
+              <dd className="text-sm text-white/70">{s.label}</dd>
+            </div>
+          ))}
+        </motion.dl>
       </div>
-    </div>
+    </header>
   );
 };
 

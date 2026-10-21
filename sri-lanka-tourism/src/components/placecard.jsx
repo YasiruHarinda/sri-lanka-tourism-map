@@ -1,70 +1,72 @@
 import { motion } from 'framer-motion';
-import { FaMapMarkerAlt } from 'react-icons/fa';
+import { FaHeart, FaMapMarkerAlt, FaRegClock, FaRegHeart, FaSun } from 'react-icons/fa';
+import { CATEGORIES, formatMonths } from '../data/places';
+import PlaceImage from './placeImage';
 
-const PlaceCard = ({ place, onClick, index }) => {
+const PlaceCard = ({ place, isFavorite, onToggleFavorite, onOpen, onHover }) => {
+  const category = CATEGORIES[place.category];
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ y: -10, scale: 1.02 }}
-      onClick={() => onClick(place)}
-      className="cursor-pointer group relative overflow-hidden rounded-2xl shadow-2xl bg-white/10 backdrop-blur-lg border border-white/20"
+    <motion.article
+      layout
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.3 }}
+      onMouseEnter={() => onHover(place.id)}
+      onMouseLeave={() => onHover(null)}
+      className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-ink/5 transition hover:-translate-y-1 hover:shadow-xl"
     >
-      {/* Image container */}
-      <div className="relative h-64 overflow-hidden">
-        <motion.img
-          src={place.image}
-          alt={place.name}
-          className="w-full h-full object-cover"
-          whileHover={{ scale: 1.1 }}
-          transition={{ duration: 0.6 }}
-        />
-        
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        
-        {/* Category badge */}
-        <div className="absolute top-4 right-4">
-          <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-xs font-semibold rounded-full text-purple-700">
-            {place.category}
+      <div className="relative h-52 overflow-hidden">
+        <PlaceImage place={place} className="h-full w-full transition duration-500 group-hover:scale-105" />
+        <div className="absolute left-3 top-3 flex gap-2">
+          <span className="rounded-full px-3 py-1 text-xs font-semibold text-white shadow" style={{ background: category?.color }}>
+            {category?.label}
           </span>
+          {place.unesco && (
+            <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink shadow">UNESCO</span>
+          )}
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-6">
-        <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-yellow-400 transition-colors">
-          {place.name}
+      {/* Sits above the card-wide link so it can be clicked on its own. */}
+      <button
+        type="button"
+        onClick={() => onToggleFavorite(place.id)}
+        aria-label={isFavorite ? `Remove ${place.name} from saved places` : `Save ${place.name}`}
+        aria-pressed={isFavorite}
+        className="absolute right-3 top-3 z-10 rounded-full bg-white/90 p-2.5 shadow transition hover:scale-110"
+      >
+        {isFavorite ? <FaHeart className="text-rose-500" /> : <FaRegHeart className="text-ink/70" />}
+      </button>
+
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="font-display text-xl font-bold leading-snug">
+          <button
+            type="button"
+            onClick={() => onOpen(place)}
+            className="text-left after:absolute after:inset-0 group-hover:text-lagoon"
+          >
+            {place.name}
+          </button>
         </h3>
-        
-        <div className="flex items-center text-blue-200 mb-3">
-          <FaMapMarkerAlt className="mr-2" />
-          <span className="text-sm">{place.region}</span>
-        </div>
-        
-        <p className="text-gray-300 text-sm line-clamp-2 mb-4">
-          {place.shortDescription}
+        <p className="mt-1 flex items-center gap-1.5 text-sm text-ink/60">
+          <FaMapMarkerAlt aria-hidden /> {place.region}
         </p>
-        
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="w-full py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all"
-        >
-          Learn More
-        </motion.button>
-      </div>
+        <p className="mt-3 line-clamp-2 text-sm text-ink/80">{place.shortDescription}</p>
 
-      {/* Shine effect on hover */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-        initial={{ x: '-100%' }}
-        whileHover={{ x: '100%' }}
-        transition={{ duration: 0.6 }}
-      />
-    </motion.div>
+        <div className="mt-auto flex flex-wrap gap-x-4 gap-y-1 pt-4 text-xs font-medium text-ink/60">
+          <span className="flex items-center gap-1.5">
+            <FaSun className="text-saffron-dark" aria-hidden /> {formatMonths(place.months)}
+          </span>
+          {place.duration && (
+            <span className="flex items-center gap-1.5">
+              <FaRegClock aria-hidden /> {place.duration}
+            </span>
+          )}
+        </div>
+      </div>
+    </motion.article>
   );
 };
 
