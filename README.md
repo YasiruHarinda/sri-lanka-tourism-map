@@ -1,6 +1,6 @@
 # Discover Sri Lanka: Interactive Travel Map
 
-An interactive guide to 20 of Sri Lanka's best places to visit, from ancient cities and cave temples to surf beaches, safari parks and the misty hill country.
+An interactive guide to 39 of Sri Lanka's best places to visit, from ancient cities and cave temples to surf beaches, safari parks and the misty hill country.
 
 Built with **React 19, Vite, Tailwind CSS, Leaflet and Framer Motion**.
 
@@ -34,7 +34,7 @@ npm run lint
 ```
 sri-lanka-tourism/src/
 ├── App.jsx                 # page layout, filter state, modal
-├── data/places.js          # the 20 destinations + categories + month helper
+├── data/places.js          # the 39 destinations + categories + month helper
 ├── hooks/
 │   ├── usePlaces.js        # bundled data, optional Firestore source
 │   └── useFavorites.js     # saved places (localStorage)
